@@ -65,7 +65,7 @@
 	      (newline out))
 	    header)
   (for-each (lambda (rtype)
-	      (declare-record-type rtype out))
+	      (declare-extern-record-type rtype out))
 	    (all-record-types))
   (newline out)
   (values))
@@ -84,6 +84,11 @@
 	      (format out ";~%"))
 	    (record-type-fields rtype))
   (format out "};"))
+
+(define (declare-extern-record-type rtype out)
+  (format out "~%struct ")
+  (write-c-identifier (record-type-name rtype) out)
+  (format out ";"))
 
 ; Even when finished we need to keep the lambda around for help with
 ; calls to it.
