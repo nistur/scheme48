@@ -112,8 +112,8 @@ include $(srcdir)/build/filenames.make
 #    that are in the current directory.
 
 BIG_HEAP = -h 8000000
-LINKER_VM = $(RUNNABLE) $(BIG_HEAP)
-LINKER_RUNNABLE = $(LINKER_VM)
+LINKER_VM = ./$(VM) $(BIG_HEAP)
+LINKER_RUNNABLE = $(LINKER_VM) -i $(IMAGE)
 LINKER_WRITEBYTE = ,open (subset i/o (write-byte)) (subset ports (set-port-crlf?!))
 START_LINKER-32 = echo ',batch';				\
 	       echo ',bench on';				\
