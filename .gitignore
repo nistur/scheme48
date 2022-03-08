@@ -1,0 +1,13 @@
+*.o
+*.so
+*.a
+config.log
+config.status
+Makefile
+go
+script-interpreter
+scheme48vm
+scheme48.image
+ps-compiler.image
+c/scheme48arch.h
+c/sysdep.h
