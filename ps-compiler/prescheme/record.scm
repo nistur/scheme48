@@ -90,32 +90,10 @@
 ; The <type-id> is used only by Pre-Scheme-in-Scheme.
 
 (define (expand-define-record-type exp r c)
-  (let ((id (cadr exp))
-	(maker (cadddr exp))
-	(fields (cddddr exp)))
-    (let ((rt (make-record-type id (cdr maker) fields)))
-      `(,(r 'begin)
-	(,(r 'define) ,maker
-	   (,(r 'let) ((,(r id) (,(r 'make-record) ',id)))
-	     (,(r 'if) (,(r 'not) (,(r 'null-pointer?) ,(r id)))
-	       (,(r 'begin)
-		 . ,(map (lambda (name)
-			   `(,(r 'record-set!) ,(r id) ,name ',id ',name))
-			 (cdr maker))))
-	     ,(r id)))
-	,@(map (lambda (field)
-		 `(,(r 'define) (,(caddr field) ,(r id))
-				(,(r 'record-ref) ,(r id) ',id ',(car field))))
-	       fields)
-	,@(map (lambda (field)
-		 `(,(r 'define) (,(cadddr field) ,(r id) ,(r 'x))
-			(,(r 'record-set!)
-			 ,(r id) ,(r 'x)',id ',(car field))))
-	       (filter (lambda (spec)
-			 (not (null? (cdddr spec))))
-		       fields))))))
-
-(define (expand-external-record-type exp r c)
+; The following line will output +++ #{name external-record-type} +++
+; or +++ #{name define-record-type} depending on which is used
+; So we just need to extract which one it is, and use that to flag the record type  
+;  (user-error "+++ ~S +++" (car exp))
   (let ((id (cadr exp))
 	(maker (cadddr exp))
 	(fields (cddddr exp)))

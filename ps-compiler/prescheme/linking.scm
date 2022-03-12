@@ -126,7 +126,6 @@
 		     #f)))
 
 (define-for-syntax-value 'expand-define-record-type expand-define-record-type)
-(define-for-syntax-value 'expand-external-record-type expand-external-record-type)
 
 ;----------------------------------------------------------------
 ; BASE-PACKAGE contains all of the primitives, syntax, etc. for Pre-Scheme
@@ -212,7 +211,7 @@
 (eval '(define-syntax define-record-type expand-define-record-type)
       base-package)
 
-(eval '(define-syntax external-record-type expand-external-record-type)
+(eval '(define-syntax external-record-type expand-define-record-type)
       base-package)
 
 ;(eval '(define-syntax define-union-type expand-define-union-type)
