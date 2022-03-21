@@ -114,6 +114,7 @@
 	  get-record-type
 	  record-type-name
 	  record-type-fields
+	  record-type-external?
 	  get-record-type-field
 	  record-field-record-type
 	  record-field-name

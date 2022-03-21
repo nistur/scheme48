@@ -12,6 +12,7 @@
   (name record-type-name)
   ; FIELDS and CONSTRUCTOR-ARGS are filled in later because of circularity
   (fields record-type-fields set-record-type-fields!)
+  (external record-type-external? set-record-type-external)
   (constructor-args			; fields passed to the constructor
    record-type-constructor-args set-record-type-constructor-args!))
 
@@ -53,7 +54,7 @@
 ; initial values are passed to the constructor, and the field specifications.
 ; Each field specification consists of a name and a type.
 
-(define (make-record-type id constructor-args specs)
+(define (make-record-type id ext constructor-args specs)
   (let ((rt (really-make-record-type id)))
     (if (table-ref *record-type-table* id)
 	(user-error "multiple definitions of record type ~S" id))
@@ -68,6 +69,7 @@
 				       (map (lambda (name)
 					      (get-record-type-field id name))
 					    constructor-args))
+    (set-record-type-external rt ext)
     rt))
 
 ; Return the field record for FIELD-ID in record-type TYPE-ID.
@@ -93,11 +95,14 @@
 ; The following line will output +++ #{name external-record-type} +++
 ; or +++ #{name define-record-type} depending on which is used
 ; So we just need to extract which one it is, and use that to flag the record type  
-;  (user-error "+++ ~S +++" (car exp))
+;  (if (equal? (format #f "~a" (car exp)) "#{name external-record-type}")
+;      (user-error "EXTERNAL |~a|" (cadr exp))
+;      (user-error "DEFINE |~a|" (car exp)))
   (let ((id (cadr exp))
 	(maker (cadddr exp))
-	(fields (cddddr exp)))
-    (let ((rt (make-record-type id (cdr maker) fields)))
+	(fields (cddddr exp))
+	(external (equal? (format #f "~a" (car exp)) "#{name external-record-type}")))
+    (let ((rt (make-record-type id external (cdr maker) fields)))
       `(,(r 'begin)
 	(,(r 'define) ,maker
 	   (,(r 'let) ((,(r id) (,(r 'make-record) ',id)))
