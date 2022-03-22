@@ -92,12 +92,9 @@
 ; The <type-id> is used only by Pre-Scheme-in-Scheme.
 
 (define (expand-define-record-type exp r c)
-; The following line will output +++ #{name external-record-type} +++
-; or +++ #{name define-record-type} depending on which is used
-; So we just need to extract which one it is, and use that to flag the record type  
-;  (if (equal? (format #f "~a" (car exp)) "#{name external-record-type}")
-;      (user-error "EXTERNAL |~a|" (cadr exp))
-;      (user-error "DEFINE |~a|" (car exp)))
+  ;; PG - This is a hack, to detect if this is being called as (define-record-type) or
+  ;; (external-record-type), the latter should set a flag in the struct to tell the code
+  ;; generator to not generate a new definition for this record
   (let ((id (cadr exp))
 	(maker (cadddr exp))
 	(fields (cddddr exp))

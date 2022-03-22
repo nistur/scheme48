@@ -87,6 +87,9 @@
 	    (record-type-fields rtype))
   (format out "};"))
 
+;; PG - We actually don't need to emit anything here, assuming the
+;; header is properly included, but it's probably safer to output a
+;; forward declaration just in case
 (define (external-record-type rtype out)
   (format out "~%struct ")
   (write-c-identifier (record-type-name rtype) out)
