@@ -115,6 +115,7 @@
 	  record-type-name
 	  record-type-fields
 	  record-type-external?
+	  record-c-name
 	  get-record-type-field
 	  record-field-record-type
 	  record-field-name

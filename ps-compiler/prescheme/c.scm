@@ -74,7 +74,10 @@
 
 (define (declare-record-type rtype out)
   (format out "~%struct ")
-  (write-c-identifier (record-type-name rtype) out)
+  (let ((cname (record-c-name rtype)))
+    (if (string? cname)
+	(format out "~a" cname)
+	(write-c-identifier (record-type-name rtype) out)))
   (format out " {~%")
   (for-each (lambda (field)
 	      (format out "  ")
@@ -92,7 +95,11 @@
 ;; forward declaration just in case
 (define (external-record-type rtype out)
   (format out "~%struct ")
-  (write-c-identifier (record-type-name rtype) out)
+  (let ((cname (record-c-name rtype)))
+    (if (string? cname)
+	(format out "~a" cname)
+	(write-c-identifier (record-type-name rtype) out)))
+;  (write-c-identifier-casesensitive (record-type-name rtype) out)
   (format out ";"))
 
 ; Even when finished we need to keep the lambda around for help with

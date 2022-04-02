@@ -13,6 +13,7 @@
   ; FIELDS and CONSTRUCTOR-ARGS are filled in later because of circularity
   (fields record-type-fields set-record-type-fields!)
   (external record-type-external? set-record-type-external)
+  (c-name record-c-name set-record-c-name)
   (constructor-args			; fields passed to the constructor
    record-type-constructor-args set-record-type-constructor-args!))
 
@@ -54,7 +55,7 @@
 ; initial values are passed to the constructor, and the field specifications.
 ; Each field specification consists of a name and a type.
 
-(define (make-record-type id ext constructor-args specs)
+(define (make-record-type id ext c-name constructor-args specs)
   (let ((rt (really-make-record-type id)))
     (if (table-ref *record-type-table* id)
 	(user-error "multiple definitions of record type ~S" id))
@@ -70,6 +71,7 @@
 					      (get-record-type-field id name))
 					    constructor-args))
     (set-record-type-external rt ext)
+    (if (string? c-name) (set-record-c-name rt c-name))
     rt))
 
 ; Return the field record for FIELD-ID in record-type TYPE-ID.
@@ -98,8 +100,10 @@
   (let ((id (cadr exp))
 	(maker (cadddr exp))
 	(fields (cddddr exp))
-	(external (equal? (format #f "~a" (car exp)) "#{name external-record-type}")))
-    (let ((rt (make-record-type id external (cdr maker) fields)))
+	(external (equal? (format #f "~a" (car exp)) "#{name external-record-type}"))
+	(c-name (if (string? (caddr exp))
+		     (caddr exp) #f)))
+    (let ((rt (make-record-type id external c-name (cdr maker) fields)))
       `(,(r 'begin)
 	(,(r 'define) ,maker
 	   (,(r 'let) ((,(r id) (,(r 'make-record) ',id)))

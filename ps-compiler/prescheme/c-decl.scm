@@ -149,7 +149,10 @@
 (define (display-c-base-type type port)
   (cond ((record-type? type)
 	 (display "struct " port)
-	 (write-c-identifier (record-type-name type) port))
+	 (let ((cname (record-c-name type)))
+	   (if (string? cname)
+	       (format port "~a" cname)
+	       (write-c-identifier (record-type-name type) port))))
 	(else
 	 (display (or (table-ref c-decl-table (base-type-uid type))
 		      (bug "no C declaration for ~S" type))
