@@ -67,8 +67,8 @@
   (lambda (call port indent)
     (let ((type (get-record-type (literal-value (call-arg call 0)))))
       (write-c-coercion (make-pointer-type type) port)
-      (format port "malloc(sizeof(struct ")
-      (write-c-identifier (record-type-name type) port)
+      (format port "malloc(sizeof(")
+      (write-record-c-name type port)
       (format port "))"))))
 
 (define-c-generator record-ref #t

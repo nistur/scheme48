@@ -72,12 +72,25 @@
   (newline out)
   (values))
 
-(define (declare-record-type rtype out)
-  (format out "~%struct ")
+(define (write-record-c-identifier rtype out)
+  (format out "struct ")
+  (write-c-identifier (record-type-name rtype) out))
+
+(define (write-record-c-name rtype out)
   (let ((cname (record-c-name rtype)))
-    (if (string? cname)
-	(format out "~a" cname)
-	(write-c-identifier (record-type-name rtype) out)))
+    (if(string? cname)
+       (format out "~a" cname)
+       (write-record-c-identifier rtype out))))
+
+(define (write-record-c-declaration rtype out)
+  (format out "struct ")
+  (let ((cname (record-c-name rtype)))
+    (if(string? cname)
+       (format out "~a" cname)
+       (write-c-identifier (record-type-name rtype) out))))
+
+(define (declare-record-type rtype out)
+  (write-record-c-name rtype out)
   (format out " {~%")
   (for-each (lambda (field)
 	      (format out "  ")
@@ -94,13 +107,15 @@
 ;; header is properly included, but it's probably safer to output a
 ;; forward declaration just in case
 (define (external-record-type rtype out)
-  (format out "~%struct ")
-  (let ((cname (record-c-name rtype)))
-    (if (string? cname)
-	(format out "~a" cname)
-	(write-c-identifier (record-type-name rtype) out)))
+  (write-record-c-declaration rtype out)
+  (format out ";~%"))
+;  (format out "~%struct ")
+;  (let ((cname (record-c-name rtype)))
+;    (if (string? cname)
+;	(format out "~a" cname)
+;	(write-c-identifier (record-type-name rtype) out)))
 ;  (write-c-identifier-casesensitive (record-type-name rtype) out)
-  (format out ";"))
+;  (format out ";"))
 
 ; Even when finished we need to keep the lambda around for help with
 ; calls to it.

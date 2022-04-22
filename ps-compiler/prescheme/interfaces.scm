@@ -211,6 +211,7 @@
           *extra-tail-call-args*
           write-c-block
           write-c-coercion
+	  write-record-c-name
           no-value-node?
           display-c-type
 	  add-c-type-declaration!
